@@ -33,6 +33,11 @@ const connectDB = async () => {
       );
     }
 
+    // Fix missing '?' before query parameters (e.g. ...mongodb.net/assignmentretryWrites=true -> ...mongodb.net/assignment?retryWrites=true)
+    if (!mongoURI.includes('?') && mongoURI.includes('retryWrites=')) {
+      mongoURI = mongoURI.replace('retryWrites=', '?retryWrites=');
+    }
+
     const conn = await mongoose.connect(mongoURI);
 
     console.log(`✅ MongoDB Connected: ${conn.connection.host}/${conn.connection.name}`);
