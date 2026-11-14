@@ -1,10 +1,12 @@
 const http = require('http');
-const app = require('./server');
+const { app } = require('./server');
+const connectDB = require('./config/db');
 const mongoose = require('mongoose');
 
-// Start temporary test server on port 5099
-const server = app.listen(5099, async () => {
-  console.log('Testing server running on port 5099...');
+const runTests = async () => {
+  await connectDB();
+  const server = app.listen(5099, async () => {
+    console.log('Testing server running on port 5099...');
 
   const request = (path, method = 'GET', body = null) => {
     return new Promise((resolve, reject) => {
@@ -105,4 +107,7 @@ const server = app.listen(5099, async () => {
     await mongoose.connection.close();
     process.exit(0);
   }
-});
+  });
+};
+
+runTests();

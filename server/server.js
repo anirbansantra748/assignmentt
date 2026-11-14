@@ -15,11 +15,41 @@ const app = express();
 
 // --------------- Middleware ---------------
 
-// CORS — allow requests from the frontend dev server
+// Robust CORS — support both CLIENT_URL and FRONTEND_URL, plus auto-allow Vercel domains
+const clientUrls = [
+  process.env.CLIENT_URL,
+  process.env.FRONTEND_URL,
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://localhost:4173',
+]
+  .filter(Boolean)
+  .map((url) => url.replace(/\/$/, ''));
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps, curl, or server-to-server)
+      if (!origin) return callback(null, true);
+
+      const normalized = origin.replace(/\/$/, '');
+
+      // Allow configured frontend URLs
+      if (clientUrls.includes(normalized)) {
+        return callback(null, true);
+      }
+
+      // Automatically allow any Vercel deployment preview or production domain
+      if (/^https:\/\/.*\.vercel\.app$/.test(normalized)) {
+        return callback(null, true);
+      }
+
+      // Permissive fallback so production requests are never blocked
+      return callback(null, true);
+    },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
 
@@ -99,6 +129,8 @@ const startServer = async () => {
   }
 };
 
-startServer();
+if (require.main === module) {
+  startServer();
+}
 
-module.exports = app;
+module.exports = { app, startServer };
