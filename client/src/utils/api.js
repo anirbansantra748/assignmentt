@@ -11,9 +11,13 @@ import axios from 'axios';
  * - In local development, default to '/api' (handled by Vite dev proxy).
  */
 const getBaseURL = () => {
-  const envUrl = import.meta.env.VITE_API_URL;
+  let envUrl = import.meta.env.VITE_API_URL;
   if (envUrl && envUrl.trim()) {
     let url = envUrl.trim().replace(/\/+$/, '');
+    // Auto-correct common typo if user omitted the random '-tcva' Render suffix
+    if (url.includes('assignmentt.onrender.com') && !url.includes('assignmentt-tcva.onrender.com')) {
+      url = url.replace('assignmentt.onrender.com', 'assignmentt-tcva.onrender.com');
+    }
     if (url.startsWith('http') && !url.endsWith('/api')) {
       url += '/api';
     }
