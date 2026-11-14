@@ -63,6 +63,22 @@ if (process.env.NODE_ENV !== 'production') {
 
 // --------------- Routes ---------------
 
+// Root welcome endpoint
+app.get('/', (_req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'TaskFlow API Server is running',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      tasks: '/api/tasks',
+      weeklySummary: '/api/tasks/weekly-summary',
+      search: '/api/tasks/search?q=keyword',
+    },
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // Health-check endpoint
 app.get('/api/health', (_req, res) => {
   res.status(200).json({
