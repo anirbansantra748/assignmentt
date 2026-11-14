@@ -21,24 +21,11 @@ const taskSchema = new mongoose.Schema(
     startTime: {
       type: String,
       trim: true,
-      validate: {
-        validator: function (v) {
-          // Allow empty string or valid HH:MM format
-          return !v || /^([01]\d|2[0-3]):([0-5]\d)$/.test(v);
-        },
-        message: 'startTime must be in HH:MM format (24-hour)',
-      },
       default: '',
     },
     endTime: {
       type: String,
       trim: true,
-      validate: {
-        validator: function (v) {
-          return !v || /^([01]\d|2[0-3]):([0-5]\d)$/.test(v);
-        },
-        message: 'endTime must be in HH:MM format (24-hour)',
-      },
       default: '',
     },
     priority: {

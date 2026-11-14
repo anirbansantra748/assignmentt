@@ -4,12 +4,25 @@ import axios from 'axios';
  * Axios instance configured with base URL and interceptors.
  * In development, Vite's proxy forwards /api requests to the backend.
  */
+/**
+ * Compute normalized base API URL:
+ * Handles trailing slashes, missing '/api', or defaults to '/api' for Vite dev proxy.
+ */
+const getBaseURL = () => {
+  let url = (import.meta.env.VITE_API_URL || '/api').trim();
+  url = url.replace(/\/+$/, ''); // remove trailing slashes
+  if (url.startsWith('http') && !url.endsWith('/api')) {
+    url += '/api';
+  }
+  return url;
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: getBaseURL(),
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000,
+  timeout: 15000,
 });
 
 /* ===== Request Interceptor ===== */
@@ -27,14 +40,20 @@ api.interceptors.response.use(
       error.message ||
       'An unexpected error occurred';
 
-    console.error('[API Error]', {
+    console.error('[API Error Details]', {
       url: error.config?.url,
+      baseURL: error.config?.baseURL,
+      fullURL: `${error.config?.baseURL || ''}${error.config?.url || ''}`,
       method: error.config?.method,
       status: error.response?.status,
+      data: error.response?.data,
       message,
     });
 
-    return Promise.reject(error);
+    const enhancedError = new Error(message);
+    enhancedError.response = error.response;
+    enhancedError.status = error.response?.status;
+    return Promise.reject(enhancedError);
   }
 );
 

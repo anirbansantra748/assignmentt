@@ -12,7 +12,8 @@ const errorHandler = (err, req, res, _next) => {
   // Mongoose validation error (e.g., missing required fields, enum mismatch)
   if (err.name === 'ValidationError') {
     statusCode = 400;
-    message = 'Validation Error';
+    const detailMessages = Object.values(err.errors).map((e) => e.message);
+    message = detailMessages.join(', ') || 'Validation Error';
     errors = Object.values(err.errors).map((e) => ({
       field: e.path,
       message: e.message,
