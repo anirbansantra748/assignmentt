@@ -6,15 +6,25 @@ import axios from 'axios';
  */
 /**
  * Compute normalized base API URL:
- * Handles trailing slashes, missing '/api', or defaults to '/api' for Vite dev proxy.
+ * - If VITE_API_URL is provided, normalize and use it.
+ * - In production (Vercel), default directly to your live Render backend URL.
+ * - In local development, default to '/api' (handled by Vite dev proxy).
  */
 const getBaseURL = () => {
-  let url = (import.meta.env.VITE_API_URL || '/api').trim();
-  url = url.replace(/\/+$/, ''); // remove trailing slashes
-  if (url.startsWith('http') && !url.endsWith('/api')) {
-    url += '/api';
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (envUrl && envUrl.trim()) {
+    let url = envUrl.trim().replace(/\/+$/, '');
+    if (url.startsWith('http') && !url.endsWith('/api')) {
+      url += '/api';
+    }
+    return url;
   }
-  return url;
+  // Production fallback directly to live Render service
+  if (import.meta.env.PROD) {
+    return 'https://assignmentt-tcva.onrender.com/api';
+  }
+  // Local development fallback
+  return '/api';
 };
 
 const api = axios.create({
@@ -22,7 +32,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 15000,
+  timeout: 45000, // 45s to allow for Render free-tier cold start on initial request
 });
 
 /* ===== Request Interceptor ===== */
