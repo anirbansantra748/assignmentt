@@ -52,6 +52,7 @@ The interface closely reproduces all 4 visual states provided in the Figma desig
 - **React 18**: Component-based UI with functional components and React Hooks.
 - **Vite 5**: Blazing-fast development server, HMR, and optimized Rollup production builds.
 - **Tailwind CSS 3**: Utility-first CSS framework configured with custom primary brand colors (`#4C6EF5`, `#EEF2FF`, `#FFF1F0`).
+- **Responsive Phone Frame (`PhoneContainer`)**: Mobile-first design that takes full viewport on mobile devices (< 640px) and presents a centered ~430px smartphone container with realistic frame styling, subtle notch, and shadow on tablets and desktops—strictly preventing awkward wide stretching.
 - **React Router DOM v6**: Client-side routing (`/` Landing, `/home` Dashboard, `/search` Search).
 - **Framer Motion 11**: Fluid physics-based animations for modal slide-up, list transitions, and swipe-to-delete gestures.
 - **Lucide React**: Clean, consistent vector icon set.

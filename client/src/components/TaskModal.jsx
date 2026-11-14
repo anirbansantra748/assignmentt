@@ -133,8 +133,8 @@ const TaskModal = ({ isOpen, onClose, onSubmit, editingTask = null }) => {
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 350 }}
-            className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-[32px] shadow-2xl
-              max-w-md mx-auto max-h-[92vh] overflow-y-auto"
+            className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 bg-white rounded-t-[32px] shadow-2xl
+              max-h-[92vh] overflow-y-auto"
           >
             {/* Top pill bar */}
             <div className="flex justify-center pt-3 pb-1">
